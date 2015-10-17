@@ -1,10 +1,3 @@
-'use stricts';
-module.exports = function (app) {
-    // app.get('/', function (req, res) {
-    //     res.render('index.ejs', {
-    //         errors: []
-    //     });
-    // });
     app.get("/", function (req, res) {
         
         // if (!req.isAuthenticated()) {
@@ -21,6 +14,14 @@ module.exports = function (app) {
         //     // página de index cuando no login.
         //     res.redirect('/visitas');
         // }
+/* global nomApp */
+'use strict';
+module.exports = function (app, passport) {
+  app.get('/', function (req, res) {
+    res.render('index.ejs', {
+        title: app.get('nomApp'),
+        errors: []
+      });
+  });
     });
 };
-

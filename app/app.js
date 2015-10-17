@@ -1,3 +1,5 @@
+/*global __dirname, process */
+'use strict';
 var express = require('express');
 var path = require('path'); // necesario para trabajar con directorios.
 var partials = require('express-partials'); // necesario para poder usar vistas parciales.
@@ -5,8 +7,29 @@ var partials = require('express-partials'); // necesario para poder usar vistas 
 var logger = require('morgan'); // módulo log para el desarrollo.
     
 
+var session = require('express-session')
+  , cookieParser = require('cookie-parser')
+  , bodyParser = require('body-parser')
+  
 // Iniciar aplicación
 var app = express();
+
+// Nombre de la aplicacion:
+app.set('nomApp', 'Visitas');
+
+
+// Activar el log en desarrollo.
+app.use(logger('dev'));
+
+// Antes de la configuración del login debemos tener inicializado esto.
+app.use(cookieParser());
+app.use(bodyParser.json()); // parser application/json
+app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
+app.use(session({
+  resave: false,
+  secret: 'secretisimo_que_te_cagas_shshsh!!!',
+  saveUninitialized: true
+}));
 
 // Establececer el directorio de las vistas ejs.
 app.set('views', path.join(__dirname, 'views')); 
@@ -20,42 +43,38 @@ app.use(partials());
 // Establecer la parte de páginas estáticas. 
 app.use(express.static('public'));
 
-// Activar el log en desarrollo.
-app.use(logger('dev'));
-
 // establecer las rutas.
 require('./routes/index')(app);
 
-// catch 404 and forward to error handler
+// Enrutadores de error
+
+// Pagina 404
 app.use(function (req, res, next) {
     var err = new Error('Página no encontrada.');
     err.status = 404;
     next(err);
 });
 
-// error handlers
-
-// development error handler
-// will print stacktrace
+// Errores desde desarrollo.
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
+            title: app.get('nomApp') + ' - Error',
             message: err.message,
             error: err
         });
     });
 }
 
-// production error handler
-// no stacktraces leaked to user
+// errores producción
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
+        title: app.get('nomApp') + ' - Error',
         error: {},
     });
 });
-
 
 module.exports = app; 
