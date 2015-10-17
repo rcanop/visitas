@@ -1,16 +1,30 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title>Visitas</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-</head>
-<body>
-    <div class="container">
-        <%- body %>
 
-    </div>
+<head>
+  <meta charset="utf-8" />
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="/styles/cookies.css">
+</head>
+
+<body>
+  <div class="container cookiesms" id="cookie1">
+    Esta web utiliza cookies, puedes ver nuestra <a href="/politica.html">la política de cookies, aquí</a> Si continuas
+    navegando estás aceptándola
+    <button onclick="controlCookies()">Aceptar</button>
+    <div class="cookies2" onmouseover="document.getElementById('cookie1').style.bottom = '0px';">Política de cookies + </div>
+  </div>
+  <script type="text/javascript" src="javascripts/cookies.js"></script>
+  <div class="container">
+    <%- body %>
+
+  </div>
+  <script type="text/javascript" src="javascripts/nocookies.js"></script>
 </body>
+
 </html>

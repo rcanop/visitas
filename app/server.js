@@ -1,9 +1,10 @@
 #!/usr/bin/env node
+/* global process */
+'use strict';
 
 /**
  * Module dependencies.
  */
-
 var app = require('./app.js');
 var debug = require('debug')('visitas:server');
 var http = require('http');
@@ -13,14 +14,14 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Crear el servidor HTTP
  */
 
 var server = http.createServer(app);
 
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Establecer el puerto de escucha.
  */
 
 server.listen(port);
@@ -50,7 +51,7 @@ function normalizePort(val) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Eventos  listener de error del servidor HTTP.
  */
 
 function onError(error) {
@@ -65,11 +66,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      console.error(bind + ' necesita privilegios superiores');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      console.error(bind + ' ya está en uso');
       process.exit(1);
       break;
     default:
@@ -78,7 +79,7 @@ function onError(error) {
 }
 
 /**
- * Event listener for HTTP server "listening" event.
+ * Maneajor de enventos del servidor HTTP.
  */
 
 function onListening() {
