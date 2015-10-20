@@ -1,6 +1,7 @@
 /* global nomApp */
 'use strict';
 module.exports = function (app, passport) {
+  // Página ppal de entrada al aplicativo.
   app.get("/", function (req, res) {
     if (!req.isAuthenticated()) {
       // página de index cuando no login.
@@ -8,6 +9,7 @@ module.exports = function (app, passport) {
         layout: 'layout',
         title: app.get('nomApp'),
         user: null,
+        message: req.flash('loginMessage'),
         errors: []
       });
     } else {
@@ -16,7 +18,9 @@ module.exports = function (app, passport) {
     }
   });
 
-  // Formulario de acceso.
+  // ------------------------------------------------------------------------------------
+  // Login y Alta local
+  // ------------------------------------------------------------------------------------
   app.get('/login', function (req, res) {
     // render the page and pass in any flash data if it exists
     res.render('login.ejs', {
@@ -26,18 +30,14 @@ module.exports = function (app, passport) {
       errors: []
     });
   });
-  // process the login form
+
   app.post('/login', passport.authenticate('local-login', {
     successRedirect: '/profile', // redirect to the secure profile section
     failureRedirect: '/login', // redirect back to the signup page if there is an error
     failureFlash: true // allow flash messages
   }));
     
-  // -----------------------------
-  // Alta de usuario
-  // -----------------------------
-    
-  // Formulario de alta.
+  // Alta de usuario local
   app.get('/signup', function (req, res) {
     // render the page and pass in any flash data if it exists
     res.render('signup.ejs', {
@@ -47,7 +47,6 @@ module.exports = function (app, passport) {
     });
   });
     
-  // process the signup form
   app.post('/signup',
     passport.authenticate('local-signup',
       {
@@ -57,6 +56,19 @@ module.exports = function (app, passport) {
       })
     );
       
+  // ------------------------------------------------------------------------------------
+  // Rutas de Facebook
+  // ------------------------------------------------------------------------------------
+  app.get('/auth/facebook', passport.authenticate('facebook'));
+  
+    // handle the callback after facebook has authenticated the user
+  app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+      successRedirect: '/profile',
+      failureRedirect: '/',
+      scope: ['email', 'name'] // esto es muy importante.
+    }));
+
 
   app.get('/profile', isLoggedIn, function (req, res) {
     console.log(app.get('nomApp'));
@@ -69,11 +81,11 @@ module.exports = function (app, passport) {
 
   });
 
+  
   app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
   });
-
 
     
 };

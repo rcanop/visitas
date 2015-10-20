@@ -1,7 +1,12 @@
 ﻿/*global process */
 'use strict';
-var LocalStrategy = require('passport-local').Strategy;
+var LocalStrategy = require('passport-local').Strategy
+  , FacebookStrategy = require('passport-facebook').Strategy; // Login con facebook 
+
 var User = require('../models/user.js');
+
+// Login con facebook
+var configAuth = require('./auth.js');
 
 module.exports = function (passport) {
   // Serialización.
@@ -64,41 +69,103 @@ module.exports = function (passport) {
     });
   }));
 
-  
 
-passport.use('local-login', new LocalStrategy({
-  // por defecto, local strategy usa usuario y  password, para este método usaremos como usuario el correo electrónico.
-  usernameField: 'email',
-  passwordField: 'password',
-  passReqToCallback: true // allows us to pass back the entire request to the callback
-}, function (req, email, password, done) {
 
-  process.nextTick(function () {  
+  passport.use('local-login', new LocalStrategy({
+    // por defecto, local strategy usa usuario y  password, para este método usaremos como usuario el correo electrónico.
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback: true // allows us to pass back the entire request to the callback
+  }, function (req, email, password, done) {
+
+    process.nextTick(function () {  
         
-    // Se busca usuario si este existe se comprueba su password y si ok pues de devuelve el usuario, 
-    // sino se manda el mensaje de error correspondiente.
-    User.getUserByEmail(email, function (user) {
-      // Si hubiese un parámetro de error se mandaria como parámetro a la función y se llamaría a done(err)
-      // if (err) {
-      //   // Error en llamada.
-      //   return done(err);
-      // }
+      // Se busca usuario si este existe se comprueba su password y si ok pues de devuelve el usuario, 
+      // sino se manda el mensaje de error correspondiente.
+      User.getUserByEmail(email, function (user) {
+        // Si hubiese un parámetro de error se mandaria como parámetro a la función y se llamaría a done(err)
+        // if (err) {
+        //   // Error en llamada.
+        //   return done(err);
+        // }
           
-      if (!user) {
-        // KO por usuario erróneo, mensaje de error
-        return done(null, false, req.flash('loginMessage', 'Usuario no encontrado.')); // req.flash is the way to set flashdata using connect-flash
-      }
+        if (!user) {
+          // KO por usuario erróneo, mensaje de error
+          return done(null, false, req.flash('loginMessage', 'Usuario no encontrado.')); // req.flash is the way to set flashdata using connect-flash
+        }
 
-      if (!user.validPassword(password)) {
-        // KO por password errónea, mensaje de error
-        return done(null, false, req.flash('loginMessage', '¡Uuups! clave errónea.')); // create the loginMessage and save it to session as flashdata
-      }
+        if (!user.validPassword(password)) {
+          // KO por password errónea, mensaje de error
+          return done(null, false, req.flash('loginMessage', '¡Uuups! clave errónea.')); // create the loginMessage and save it to session as flashdata
+        }
 
-      // respuesta OK con el usuario autenticado.
-      return done(null, user);
+        // respuesta OK con el usuario autenticado.
+        return done(null, user);
 
+      });
     });
-  });
-}));
+  }));
 
+  // =========================================================================
+  // Estrategia de autenticación Facebook
+  // =========================================================================
+  passport.use('facebook', new FacebookStrategy({
+    clientID: configAuth.facebookAuth.clientID,
+    clientSecret: configAuth.facebookAuth.clientSecret,
+    callbackURL: configAuth.facebookAuth.callbackURL,
+    profileFields: configAuth.facebookAuth.profileFields
+
+  }, function (token, refreshToken, profile, done) {
+    // tema asincronía
+    process.nextTick(function () {
+      User.getUserByFacebookId(profile.id, function (user) {
+        if (user) {
+          console.log("Usuario encontrado");
+          console.log(profile);
+          user.token = token;
+          user.name = profile.name.givenName || null;
+          if (user.name) {
+           var famName = (profile.name.familyName || null);
+           user.name += (famName ? ' ' + famName : '');
+          }
+          return done(null, user);
+        } else {
+          // Crear el usuario NUEVO
+          User.usuarioBlank();
+                    
+          // Creamos las credenciales
+          User.password = null;
+          User.tipoUsuario = 1; // Facebook
+          User.token = token;
+          User.id = profile.id;
+          User.name = profile.name.givenName || null;
+          if (User.name) {
+           var famName = (profile.name.familyName || null);
+           User.name += (famName ? ' ' + famName : '');
+          }
+          if (profile.emails) {
+            User.email = profile.emails[0].value || null;
+          } else {
+            User.mail = null;
+          }
+          User.displayName = profile.displayName || null;
+          User.username = profile.username || null;          
+
+          if(!User.email) {
+            return done(null, false);
+          }
+          // Grabamos el usuario en el modelo
+          User.createUser(function (err) {
+            if (err) {
+              return done(err);
+
+            } else {
+              return done(null, User);
+
+            }
+          });
+        }
+      });
+    });
+  }));
 };

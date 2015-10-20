@@ -13,9 +13,8 @@ var session = require('express-session')
   , cookieParser = require('cookie-parser')
   , bodyParser = require('body-parser')
   , passport = require('passport')
-  , localStrategy = require('passport-local')
   , flash = require('connect-flash');
-  
+
 // Iniciar aplicación
 var app = express();
 

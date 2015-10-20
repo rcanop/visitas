@@ -3,13 +3,13 @@
 var user = {
     idUsuarios: 0,
     tipoUsuario: 0, // O normal
-    email: '',
-    password: null,
-    id: null,
-    token: null,
-    name: null,
-    displayName: null,
-    username: null,
+    email: String,
+    password: String,
+    id: String,
+    token: String,
+    name: String,
+    displayName: String,
+    username: String,
     db: require('./models.js'),
     bcrypt: require('bcrypt-nodejs'),
     
@@ -44,12 +44,30 @@ var user = {
               user.actualizarValores(row);
               callback("", user);
             } else {
-              return callback(userId, null)
+              return callback(userId, null);
             }
           }
         });
     },
     
+    getUserByFacebookId: function (facebookId, callback) {
+        var cmdSQL = "SELECT * FROM usuarios WHERE id = ? AND tipoUsuario = 1 LIMIT 1";
+        var cmd = this.db.prepare(cmdSQL, [facebookId]);
+                
+        cmd.get(function (error, row) {
+          if (error) {
+            throw error;
+          } else {
+            if (row) {
+              user.actualizarValores(row);
+              callback(user);
+            } else {
+              return callback(null);
+            }
+          }
+        });
+    },
+
     getUserByEmail: function (email, callback) {
         var cmdSQL = "SELECT * FROM usuarios WHERE email = ?";
         var cmd = this.db.prepare(cmdSQL);

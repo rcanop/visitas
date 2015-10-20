@@ -1,27 +1,33 @@
 ﻿<div class="page-header text-center">
-    <h1><span class="glyphicon glyphicon-info-sign"></span> Información usuario </h1>
-    <a href="/logout" class="btn btn-danger btn-sm">
-        <span class="glyphicon glyphicon-log-out"></span> Logout
-    </a>
-    <a href="/visitas" class="btn btn-primary btn-sm">
-        <span class="glyphicon glyphicon-briefcase"></span> Aplicación
-    </a>
+  <h1><span class="glyphicon glyphicon-info-sign"></span> Información usuario </h1>
+  <a href="/logout" class="btn btn-danger btn-sm">
+    <span class="glyphicon glyphicon-log-out"></span> Logout
+  </a>
+  <a href="/visitas" class="btn btn-primary btn-sm">
+    <span class="glyphicon glyphicon-briefcase"></span> Aplicación
+  </a>
 </div>
 
 <div class="row">
-    <div class="col-sm-3"></div>
-    <div class="col-sm-6">
-        <div class="well">
-            <h3><span class="glyphicon glyphicon-user"> Datos</span></h3>
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6">
+    <div class="well">
+      <h3><span class="glyphicon glyphicon-user"> Datos</span></h3>
 
-            <p>
-                <strong>id</strong>: <%= user.idUsuarios %><br>
-                <strong>Tipo Usuario</strong>: <%= user.tipoUsuario == 0 ? "Local" : "Otro tipo" %><br />
-                <strong>email</strong>: <%= user.email %><br>
-                <!--strong>password</strong>: <%= user.password %> -->
-            </p>
+      <p>
+        <strong>id</strong>: <%= user.idUsuarios %>
+        <br />
+        <strong>Tipo Usuario</strong>: <%= user.tipoUsuario == 0 ? "Local" : user.tipoUsuario == 1 ? "Facebook": "Otro tipo" %>
+        <br />
+        <strong>email</strong>: <%= user.email %>
+        <br />
+        <!--<strong>password</strong>: <%= user.password %> -->
+        <!--<strong>token</strong>: <%= user.token %> -->
+        <!--<br /> -->
+        <strong>name</strong>: <%= user.name %>
+      </p>
 
-        </div>
     </div>
+  </div>
 
 </div>
