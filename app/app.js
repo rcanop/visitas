@@ -15,6 +15,9 @@ var session = require('express-session')
   , passport = require('passport')
   , flash = require('connect-flash');
 
+// favicon
+var favicon = require('serve-favicon');
+
 // Iniciar aplicación
 var app = express();
 
@@ -57,6 +60,9 @@ require('./routes/index')(app, passport);
 
 // Establecer la parte de páginas estáticas. 
 app.use(express.static('public'));
+
+// favicon
+app.use(favicon(path.join(__dirname + '/../public/favicon.ico')));
 
 // Enrutadores de error
 
