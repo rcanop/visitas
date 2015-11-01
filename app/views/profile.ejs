@@ -3,30 +3,49 @@
   <a href="/logout" class="btn btn-danger btn-sm">
     <span class="glyphicon glyphicon-log-out"></span> Logout
   </a>
-  <a href="/visitas" class="btn btn-primary btn-sm">
+  <a href="#" class="btn btn-primary btn-sm">
     <span class="glyphicon glyphicon-briefcase"></span> Aplicación
   </a>
 </div>
 
 <div class="row">
-  <div class="col-sm-3"></div>
-  <div class="col-sm-6">
-    <div class="well">
-      <h3><span class="glyphicon glyphicon-user"> Datos</span></h3>
-
-      <p>
-        <strong>id</strong>: <%= user.idUsuarios %>
-        <br />
-        <strong>Tipo Usuario</strong>: <%= user.tipoUsuario == 0 ? "Local" : user.tipoUsuario == 1 ? "Facebook": "Otro tipo" %>
-        <br />
-        <strong>email</strong>: <%= user.email %>
-        <br />
-        <!--<strong>password</strong>: <%= user.password %> -->
-        <!--<strong>token</strong>: <%= user.token %> -->
-        <!--<br /> -->
-        <strong>name</strong>: <%= user.name %>
-      </p>
-
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-heading"><span class="glyphicon glyphicon-user"> Datos</span></h3>
+      </div>
+      <div class="panel body"><strong>Información detallada del usuario activo.</strong></div>
+      <table class="table table-hover">
+        <tr>
+          <td width="20%"><strong>id</strong></td>
+          <td><%= user.idUsuarios %></td>
+        </tr>
+        <tr>
+          <td><strong>Tipo usuario</strong></td>
+          <td><%= user.tipoUsuario == 0 ? "Local" : user.tipoUsuario == 1 ? "Facebook": "Otro tipo" %></td>
+        </tr>
+        <tr>
+          <td><strong>email</strong></td>
+          <td><%= user.email %></td>
+        </tr>
+        <!--<tr>
+          <td><strong>password</strong></td>
+          <td><%= user.password %></td>
+        </tr>-->
+        <tr>
+          <td><strong>Nombre Facebook</strong></td>
+          <td><%= user.fb_name %></td>
+        </tr>
+        <tr>
+          <td><strong>E-mail Facebook</strong></td>
+          <td><%= user.fb_email %></td>
+        </tr>
+        <!--<tr>
+          <td><strong>Token</strong></td>
+          <td><%= user.fb_token %></td>
+        </tr>-->
+      </table>
     </div>
   </div>
 

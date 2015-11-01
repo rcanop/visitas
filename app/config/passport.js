@@ -120,52 +120,87 @@ module.exports = function (passport) {
     process.nextTick(function () {
       User.getUserByFacebookId(profile.id, function (user) {
         if (user) {
-          console.log("Usuario encontrado");
-          console.log(profile);
-          user.token = token;
-          user.name = profile.name.givenName || null;
-          if (user.name) {
-           var famName = (profile.name.familyName || null);
-           user.name += (famName ? ' ' + famName : '');
-          }
-          return done(null, user);
-        } else {
-          // Crear el usuario NUEVO
-          User.usuarioBlank();
-                    
-          // Creamos las credenciales
-          User.password = null;
-          User.tipoUsuario = 1; // Facebook
-          User.token = token;
-          User.id = profile.id;
-          User.name = profile.name.givenName || null;
-          if (User.name) {
-           var famName = (profile.name.familyName || null);
-           User.name += (famName ? ' ' + famName : '');
-          }
+          user.fb_token = token;
+          user.fb_firstname = (profile.name.givenName || null);
+          user.fb_lastname = (profile.name.familyName || null)
+          user.fb_name = (User.fb_firstname || '') + ((' ' + User.fb_lastname) || '');
+
           if (profile.emails) {
-            User.email = profile.emails[0].value || null;
+            user.fb_email = profile.emails[0].value || null;
           } else {
-            User.mail = null;
+            user.fb_mail = null;
           }
-          User.displayName = profile.displayName || null;
-          User.username = profile.username || null;          
-
-          if(!User.email) {
-            return done(null, false);
-          }
-          // Grabamos el usuario en el modelo
-          User.createUser(function (err) {
+          // Actualizamos el usuario con los datos de facebook
+          user.updateUser(function (err) {
             if (err) {
-              return done(err);
-
+              console.log("error de actualización de usuario con datos facebook.");
+              return done(null, false);
             } else {
               return done(null, User);
-
             }
           });
-        }
-      });
+         
+        } else {
+          if (profile.emails) {
+            User.usuarioBlank();
+            
+            // Busca el correo de facebook en la tabla usuarios, si existe añadir la información sino crear usuario.
+            User.getUserByEmail(profile.emails[0].value, function (user) {
+              if (user) {
+                User.idUsuarios = user.idUsuarios;
+                User.email = user.email;
+                User.tipoUsuario = user.tipoUsuario;
+                User.password = user.password;
+
+              } else {
+                User.email = profile.emails[0].value;
+                User.tipoUsuario = 1;
+              }
+              
+              // Creamos / actualizamos las credenciales de facebook
+              User.fb_token = token;
+              User.fb_id = profile.id;
+              User.fb_email = profile.emails[0].value;
+              User.fb_firstname = (profile.name.givenName || null);
+              User.fb_lastname = (profile.name.familyName || null)
+              User.fb_name = (User.fb_firstname || '') + ((' ' + User.fb_lastname) || '');
+              
+              if (!User.email) {
+                // sino tenemos un email no seguimos nuestra autenticación se basa principalmente en los email.
+                return done(null, false);
+              }
+
+              if (User.idUsuarios <= 0 || isNaN(User.idUsuarios)) {
+                // Crear el usuario NUEVO
+                User.createUser(function (err) {
+                  if (err) {
+                    console.log("Error creacion usuario tipo facebook");
+                    console.log(err);
+                    return done(err);
+
+                  } else {
+                    return done(null, User);
+
+                  }
+                });
+              } else {
+                // Actualizamos los datos del usuario con los de facebook.
+                User.updateUser(function (err) {
+                  if (err) {
+                    console.log("error de actualización de usuario con datos facebook.");
+                    return done(null, false);
+                  } else {
+                    return done(null, User);
+                  }
+                })
+              } // (User.idUsuarios <= 0 || isNaN(User.idUsuarios))
+            });
+          } else { 
+            // no se ha recuperado el email de facebook. No se registra el usuario.
+            return done(null, false)
+          } // profile.emails
+        } // if(user) 
+      }); //User.getByuFacebookId
     });
   }));
 };

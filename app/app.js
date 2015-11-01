@@ -31,7 +31,7 @@ app.use(bodyParser.json()); // parser application/json
 app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(session({
   resave: false,
-  secret: 'secretisimo_que_te_cagas_shshsh!!!',
+  secret: 'secretísimo_que_te_cagas_shshsh!!!',
   saveUninitialized: true
 }));
 
@@ -50,11 +50,13 @@ app.set('view engine', 'ejs');
 // Activar el uso de vistas parciales.
 app.use(partials());
 
-// Establecer la parte de páginas estáticas. 
-app.use(express.static('public'));
 
 // establecer las rutas.
 require('./routes/index')(app, passport);
+
+
+// Establecer la parte de páginas estáticas. 
+app.use(express.static('public'));
 
 // Enrutadores de error
 

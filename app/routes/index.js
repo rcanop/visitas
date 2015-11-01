@@ -2,7 +2,7 @@
 'use strict';
 module.exports = function (app, passport) {
   // Página ppal de entrada al aplicativo.
-  app.get("/", function (req, res) {
+  app.get("/", function (req, res, next) {
     if (!req.isAuthenticated()) {
       // página de index cuando no login.
       res.render('index.ejs', {
@@ -13,16 +13,24 @@ module.exports = function (app, passport) {
         errors: []
       });
     } else {
-      // página de index cuando no login.
-      res.redirect('/about.html');
+      // página de index cuando login.
+      res.redirect("/profile");
+      
     }
   });
 
+  app.get("/acerca.html", function (req, res, next) {
+    if (req.isAuthenticated()) {
+      next()
+      
+    } else {
+      res.redirect("/");
+    }
+  })
   // ------------------------------------------------------------------------------------
   // Login y Alta local
   // ------------------------------------------------------------------------------------
   app.get('/login', function (req, res) {
-    // render the page and pass in any flash data if it exists
     res.render('login.ejs', {
       message: req.flash('loginMessage'),
       title: app.get('nomApp') + ' - Acceder',
@@ -61,7 +69,7 @@ module.exports = function (app, passport) {
   // ------------------------------------------------------------------------------------
   app.get('/auth/facebook', passport.authenticate('facebook'));
   
-    // handle the callback after facebook has authenticated the user
+    
   app.get('/auth/facebook/callback',
     passport.authenticate('facebook', {
       successRedirect: '/profile',
@@ -71,8 +79,6 @@ module.exports = function (app, passport) {
 
 
   app.get('/profile', isLoggedIn, function (req, res) {
-    console.log(app.get('nomApp'));
-    // render the page and pass in any flash data if it exists
     res.render('profile.ejs', {
       title: app.get('nomApp') + ' - Detalle Usuario',
       errors: [],
@@ -91,7 +97,6 @@ module.exports = function (app, passport) {
 };
 
 function isLoggedIn(req, res, next) {
-        
     // Si el usario está autenticado pasamos a la siguiente evaluación 
     if (req.isAuthenticated())
         return next();

@@ -23,11 +23,12 @@ function createTableUsuarios(dropTable) {
       "tipoUsuario SMALLINT NOT NULL, \r\n " +
       "email VARCHAR(254),\r\n" +
       "password VARCHAR(8192), \r\n" +
-      "id VARCHAR(128), \r\n" +
-      "token VARCHAR(4096), \r\n" +
-      "name VARCHAR(254), \r\n" +
-      "displayName VARCHAR(254) \r\n," +
-      "username VARCHAR(254)\r\n" +
+      "fb_id VARCHAR(128), \r\n" +
+      "fb_token VARCHAR(4096), \r\n" +
+      "fb_email VARCHAR(254),\r\n" +
+      "fb_name VARCHAR(254), \r\n" +
+      "fb_firstname VARCHAR(254) \r\n," +
+      "fb_lastname VARCHAR(254)\r\n" +
       ")";
     db.exec(cmdSQL);
 
