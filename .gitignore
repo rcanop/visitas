@@ -83,3 +83,6 @@ $RECYCLE.BIN/
 *.sqlite
 # Ficheros de configuración entorno desarrollo local
 .env
+
+#Bower
+public/bower_components/
