@@ -56,6 +56,7 @@ app.use(partials());
 
 // establecer las rutas.
 require('./routes/index')(app, passport);
+require('./routes/users')(app, passport);
 
 
 // Establecer la parte de páginas estáticas. 

@@ -22,11 +22,21 @@ module.exports = function (app, passport) {
   app.get("/acerca.html", function (req, res, next) {
     if (req.isAuthenticated()) {
       next()
-      
+
     } else {
       res.redirect("/");
     }
-  })
+  });
+
+  app.get("/visitas.html", function (req, res, next) {
+    if (req.isAuthenticated()) {
+      next()
+
+    } else {
+      res.redirect("/");
+    }
+  });
+  
   // ------------------------------------------------------------------------------------
   // Login y Alta local
   // ------------------------------------------------------------------------------------
