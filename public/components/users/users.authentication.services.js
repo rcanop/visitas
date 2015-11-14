@@ -1,4 +1,4 @@
-﻿angular.module('users').factory('Authentication', ['$resource',
+﻿angular.module('usersModule').factory('Authentication', ['$resource',
     function ($resource) {
         return $resource('/users/current', 
                 {}, {

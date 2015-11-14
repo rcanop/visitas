@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html ng-app="visitasApp" ng-controller="AppController">
+
+<head>
+  <base href="/">
+  <meta charset="utf-8" />
+  <title>{{ nombreApp }}</title>
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+
+</head>
+
+<body>
+  <header>
+    <div class="page-header text-center row">
+      <div class="col-sm-9">
+        <h1><span class="glyphicon glyphicon-briefcase"></span> {{ nombreApp }}</h1>
+      </div>
+      <div class="col-sm-3">
+        <span>{{ usuario }}</span><br/>
+        <a href="/logout" class="btn btn-info btn-sm ">
+          <span class="glyphicon glyphicon-log-out"></span> Salida sistema
+        </a>
+        <a href="/" class="btn btn-danger btn-sm ">
+          <span class="glyphicon glyphicon-briefcase"></span> Inicio
+        </a>
+      </div>
+    </div>
+  </header>
+  <nav>
+    <div class="container"></div>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <!--<pre> Datos: {{ visitas }}</pre>-->
+      <!--<pre>{{ user }}</pre>-->
+    </div>
+    <div ng-view></div>
+  </div>
+  <div class="container cookiesms" id="cookie1">
+    Esta web utiliza cookies, puedes ver nuestra <a href="/politica.html">la política de cookies, aquí</a> Si continuas navegando
+    estás aceptándola
+    <button onclick="controlCookies()">Aceptar</button>
+    <div class="cookies2" onmouseover="document.getElementById('cookie1').style.bottom = '0px';">Política de cookies + </div>
+  </div>
+  <script type="text/javascript" src="javascripts/cookies.js"></script>
+  <script type="text/javascript" src="javascripts/nocookies.js"></script>
+  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+  <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+  <script type="text/javascript" src="bower_components/angular-i18n/angular-locale_es-es.js"></script>
+  <script type="text/javascript" src="components/users/users.js"></script>
+  <script type="text/javascript" src="components/users/users.authentication.services.js"></script>
+  <script type="text/javascript" src="visitas/visitas.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+</body>
+
+</html>

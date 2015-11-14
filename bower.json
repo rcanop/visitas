@@ -1,0 +1,21 @@
+{
+  "name": "visitas",
+  "description": "Aplicación de visitas.",
+  "main": "app.js",
+  "authors": [
+    "Rafael Cano"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/rcanop/visitas",
+  "ignore": [
+    "**/.*",
+    "public/bower_components"
+  ],
+  "dependencies": {
+    "angular-i18n": "~1.4.7",
+    "angular-resource": "~1.4.7",
+    "angular-route": "~1.4.7",
+    "angular": "~1.4.7",
+    "bootstrap": "~3.3.5"
+  }
+}

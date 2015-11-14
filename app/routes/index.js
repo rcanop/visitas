@@ -28,7 +28,7 @@ module.exports = function (app, passport) {
     }
   });
 
-  app.get("/visitas.html", function (req, res, next) {
+  app.get("/app.html", function (req, res, next) {
     if (req.isAuthenticated()) {
       next()
 
