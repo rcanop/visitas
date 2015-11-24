@@ -22,8 +22,9 @@ function controlCookies() {
   localStorage.controlCookie = (localStorage.controlCookie || '0');
   if (parseInt(localStorage.controlCookie) == 0) {
     localStorage.controlCookie = '1'; // incrementamos cuenta de la cookie
-  }
-  if (parseInt(localStorage.controlCookie) > 0) {
+    location.reload();
+     
+  } else if (parseInt(localStorage.controlCookie) > 0) {
     divCook.style.display = 'none'; // Esconde la política de cookies
 
     // Si no hay incio de session se redirige a la página principal.
