@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-var users = require('../controllers/users_controller.js');
+var users = require('../controllers/users.controller.js');
 /* GET users listing. */
 module.exports = function (app, passport) {
     app.route('/users')

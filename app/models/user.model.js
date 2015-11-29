@@ -1,8 +1,8 @@
 ﻿'use strict';
 
 var user = {
-    idUsuarios: 0,
-    tipoUsuario: 0, // O normal
+    idusuarios: 0,
+    tipousuario: 0, // O normal
     email: String,
     password: String,
     fb_id: String,
@@ -16,8 +16,8 @@ var user = {
     
     usuarioBlank: function () {
         
-        this.idUsuarios = 0;
-        this.tipoUsuario = 0; // O normal
+        this.idusuarios = 0;
+        this.tipousuario = 0; // O normal
         this.email = "";
         this.password = null;
         this.fb_id = null;
@@ -35,7 +35,7 @@ var user = {
     },
     
     getUserById: function (userId, callback) {
-        var cmdSQL = "SELECT * FROM usuarios WHERE idUsuarios = ?";
+        var cmdSQL = "SELECT * FROM usuarios WHERE idusuarios = ?";
         var cmd = this.db.prepare(cmdSQL, [userId]);
         
         cmd.get(function (err, row) {
@@ -54,7 +54,7 @@ var user = {
     },
     
     getUserByFacebookId: function (facebookId, callback) {
-        var cmdSQL = "SELECT * FROM usuarios WHERE fb_id = ? AND tipoUsuario = 1 LIMIT 1";
+        var cmdSQL = "SELECT * FROM usuarios WHERE fb_id = ? AND tipousuario = 1 LIMIT 1";
         var cmd = this.db.prepare(cmdSQL, [facebookId]);
                 
         cmd.get(function (err, row) {
@@ -93,12 +93,12 @@ var user = {
     },
     
     createUser: function (cb) {
-        var cmdSQL = "INSERT INTO usuarios (idUsuarios, tipoUsuario, email, password, fb_id, fb_email, fb_token, fb_name, fb_firstName, fb_lastname)" + 
+        var cmdSQL = "INSERT INTO usuarios (idusuarios, tipousuario, email, password, fb_id, fb_email, fb_token, fb_name, fb_firstName, fb_lastname)" + 
             " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         var param = [
             null,
-            this.tipoUsuario,
+            this.tipousuario,
             this.email,
             this.password,
             this.fb_id,
@@ -114,7 +114,7 @@ var user = {
             cb(err);
           }
           else {
-            user.idUsuarios = this.lastID;
+            user.idusuarios = this.lastID;
             cb(false);
           }
         });
@@ -122,7 +122,7 @@ var user = {
 
     updateUser: function (cb) {
       var cmdSQL = "UPDATE usuarios " +
-      "SET tipoUsuario = ?" +
+      "SET tipousuario = ?" +
       ", email = ?" +
       ", password = ?" +
       ", fb_id = ?" +
@@ -131,10 +131,10 @@ var user = {
       ", fb_name = ?" +
       ", fb_firstName = ?" +
       ", fb_lastname = ?" +
-      "WHERE idUsuarios = ?";
+      "WHERE idusuarios = ?";
 
         var param = [
-            this.tipoUsuario,
+            this.tipousuario,
             this.email,
             this.password,
             this.fb_id,
@@ -143,7 +143,7 @@ var user = {
             this.fb_name,
             this.fb_firstname,
             this.fb_lastname,
-            this.idUsuarios
+            this.idusuarios
         ];
         
         user.db.run(cmdSQL, param, function (err) {

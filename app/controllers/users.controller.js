@@ -1,4 +1,4 @@
-﻿var User = require('../models/user.js');
+﻿var User = require('../models/user.model.js');
 exports.read = function (req, res, next) {
     var user = req.user;
     res.json(user);

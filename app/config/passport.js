@@ -3,7 +3,7 @@
 var LocalStrategy = require('passport-local').Strategy
   , FacebookStrategy = require('passport-facebook').Strategy; // Login con facebook 
 
-var User = require('../models/user.js');
+var User = require('../models/user.model.js');
 
 // Login con facebook
 var configAuth = require('./auth.js');
@@ -11,7 +11,7 @@ var configAuth = require('./auth.js');
 module.exports = function (passport) {
   // Serialización.
   passport.serializeUser(function (user, done) {
-    done(null, user.idUsuarios);
+    done(null, user.idusuarios);
   });
 
   passport.deserializeUser(function (id, done) {
@@ -52,7 +52,7 @@ module.exports = function (passport) {
           // Creamos las credenciales
           User.email = email;
           User.password = User.generateHash(password);
-          User.tipoUsuario = 0;
+          User.tipousuario = 0;
                     
           // Grabamos el usuario en el modelo
           User.createUser(function (err) {
@@ -147,14 +147,14 @@ module.exports = function (passport) {
             // Busca el correo de facebook en la tabla usuarios, si existe añadir la información sino crear usuario.
             User.getUserByEmail(profile.emails[0].value, function (user) {
               if (user) {
-                User.idUsuarios = user.idUsuarios;
+                User.idusuarios = user.idusuarios;
                 User.email = user.email;
-                User.tipoUsuario = user.tipoUsuario;
+                User.tipousuario = user.tipousuario;
                 User.password = user.password;
 
               } else {
                 User.email = profile.emails[0].value;
-                User.tipoUsuario = 1;
+                User.tipousuario = 1;
               }
               
               // Creamos / actualizamos las credenciales de facebook
@@ -170,7 +170,7 @@ module.exports = function (passport) {
                 return done(null, false);
               }
 
-              if (User.idUsuarios <= 0 || isNaN(User.idUsuarios)) {
+              if (User.idusuarios <= 0 || isNaN(User.idusuarios)) {
                 // Crear el usuario NUEVO
                 User.createUser(function (err) {
                   if (err) {
@@ -193,7 +193,7 @@ module.exports = function (passport) {
                     return done(null, User);
                   }
                 })
-              } // (User.idUsuarios <= 0 || isNaN(User.idUsuarios))
+              } // (User.idusuarios <= 0 || isNaN(User.idusuarios))
             });
           } else { 
             // no se ha recuperado el email de facebook. No se registra el usuario.
