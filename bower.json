@@ -9,13 +9,17 @@
   "homepage": "https://github.com/rcanop/visitas",
   "ignore": [
     "**/.*",
-    "public/bower_components"
+    "public/bower_components",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
   ],
   "dependencies": {
-    "angular-i18n": "~1.4.7",
-    "angular-resource": "~1.4.7",
-    "angular-route": "~1.4.7",
-    "angular": "~1.4.7",
+    "angular-i18n": "~1.4.8",
+    "angular-resource": "~1.4.8",
+    "angular-route": "~1.4.8",
+    "angular": "~1.4.8",
     "bootstrap": "~3.3.5"
   }
 }

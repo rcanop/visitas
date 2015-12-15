@@ -2,7 +2,7 @@
 'use strict';
 module.exports = function (app, passport) {
   // Página ppal de entrada al aplicativo.
-  app.get("/", function (req, res, next) {
+  app.get('/', function (req, res, next) {
     if (!req.isAuthenticated()) {
       // página de index cuando no login.
       res.render('index.ejs', {
@@ -14,29 +14,29 @@ module.exports = function (app, passport) {
       });
     } else {
       // página de index cuando login.
-      res.redirect("/profile");
-      
+      res.redirect('/app.html');
+
     }
   });
 
-  app.get("/acerca.html", function (req, res, next) {
+  app.get('/acerca.html', function (req, res, next) {
     if (req.isAuthenticated()) {
       next()
 
     } else {
-      res.redirect("/");
+      res.redirect('/');
     }
   });
 
-  app.get("/app.html", function (req, res, next) {
+  app.get('/app.html*', function (req, res, next) {
     if (req.isAuthenticated()) {
       next()
 
     } else {
-      res.redirect("/");
+      res.redirect('/');
     }
   });
-  
+
   // ------------------------------------------------------------------------------------
   // Login y Alta local
   // ------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ module.exports = function (app, passport) {
       errors: []
     });
   });
-    
+
   app.post('/signup',
     passport.authenticate('local-signup',
       {
@@ -78,8 +78,8 @@ module.exports = function (app, passport) {
   // Rutas de Facebook
   // ------------------------------------------------------------------------------------
   app.get('/auth/facebook', passport.authenticate('facebook'));
-  
-    
+
+
   app.get('/auth/facebook/callback',
     passport.authenticate('facebook', {
       successRedirect: '/profile',
@@ -97,20 +97,21 @@ module.exports = function (app, passport) {
 
   });
 
-  
+
   app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
   });
 
-    
+
 };
 
 function isLoggedIn(req, res, next) {
-    // Si el usario está autenticado pasamos a la siguiente evaluación 
-    if (req.isAuthenticated())
-        return next();
-        
-    // sino a la página principal.
-    res.redirect('/');
+  // Si el usario está autenticado pasamos a la siguiente evaluación 
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  // sino a la página principal.
+  res.redirect('/');
 }

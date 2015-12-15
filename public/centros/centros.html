@@ -1,0 +1,38 @@
+<section ng-controller="CentrosController">
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="panel panel-info col-sm-8">
+      <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-info-sign"> Información de centros de visita </span></h3>
+        <br/>
+        <a href="/app.html#/centros/0" class="btn btn-info btn-sm ">
+          <span class="glyphicon glyphicon-edit"></span> Nuevo centro
+        </a>
+      </div>
+      <div class="panel body">
+        <div class="row" ng-repeat="c in centros" ng-if="centros.length > 0">
+          <div class="col-sm-12"><strong>Centro:</strong> {{ c.centro }}</div>
+          <div class="col-sm-12"><strong>Direccion:</strong> {{ c.direccion }}</div>
+          <div class="col-sm-3"><strong>Cód. Postal:</strong> {{ c.codpos }}</div>
+          <div class="col-sm-3"><strong>Población:</strong> {{ c.poblacion }}</div>
+          <div class="col-sm-3"><strong>Provincia:</strong> {{ c.provincia }}</div>
+          <div class="col-sm-3"><strong>Teléfono:</strong> {{ c.telef }}</div>
+          <div class="col-sm-3"><strong>Móvil:</strong> {{ c.movil }}</div>
+          <div class="col-sm-3"><strong>E-mail:</strong> {{ c.email }}</div>
+          <div class="col-sm-12 text-right">
+            <a href="/app.html#/centros/{{ c.idcentros }}" class="btn btn-warning btn-sm" ng-if="user.idUsuarios == c.idUsuarios">
+              <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a href="/app.html#/centros/{{ c.idcentros }}" class="btn btn-warning btn-sm" ng-if="user.idUsuarios != c.idUsuarios">
+              <span class="glyphicon glyphicon-eyeopen"></span>
+            </a>
+          </div>
+          <div class="row" ng-if="centros.length == 0">
+            <p class="text-center"><strong>No se han encontrado centros dados de alta</strong></p>
+          </div>
+          <div class="col-sm-12"><pre>{{ c }}</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

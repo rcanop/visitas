@@ -28,7 +28,7 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-console.log("Servidor funcionando en localhost:" + port);
+console.log('Servidor funcionando en localhost:' + port);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -84,8 +84,8 @@ function onError(error) {
 
 function onListening() {
   var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  var bind = typeof addr === 'string' ?
+    'pipe ' + addr :
+    'port ' + addr.port;
   debug('Listening on ' + bind);
 }

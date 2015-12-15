@@ -1,0 +1,60 @@
+<section ng-controller="CentroController">
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="panel panel-info col-sm-8">
+      <div class="panel-heading">
+        <h3 class="panel-title text-center"><span class="glyphicon glyphicon-info-sign"> Información del centro de visita </span></h3>
+        <br/>
+        <a href="/app.html#/centros" class="btn btn-info btn-sm ">
+          <span class="glyphicon glyphicon-list-all"></span> Volver
+        </a>
+      </div>
+      <div class="panel body">
+        <form ng-submit="submit()" ng-if="centro != undefined">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="input-group">
+                <span class="input-group-addon" id="titcentro">Nombre: </span>
+                <input class="form-control" placeholder="nombre del centro" ng-model="centro.centro" ng-required="Este campo es obligatorio"
+                aria-describedby="titcentro">
+              </div>
+
+            </div>
+            <div class="col-sm-12">
+              <div class="input-group">
+                <span class="input-group-addon" id="titdireccion">Dirección: </span>
+                <textarea class="form-control" rows="3" placeholder="dirección del centro" ng-model="centro.direccion" aria-describedby="titdireccion"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="input-group">
+                <span class="input-group-addon" id="titcodpos">Cód. Postal: </span>
+                <input class="form-control" ng-model="centro.codpos" aria-describedby="titcodpos">
+                <span class="input-group-addon" id="titpoblacion">Población: </span>
+                <input class="form-control" placeholder="Población del centro" ng-model="centro.poblacion" aria-describedby="titpoblacion">
+                <span class="input-group-addon" id="titprovincia">Provincia: </span>
+                <input class="form-control" placeholder="" ng-model="centro.provincia" aria-describedby="titprovincia">
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div class="input-group">
+                <span class="input-group-addon" id="tittelef"><span class="glyphicon glyphicon-phone-alt"></span></span>
+                <input class="form-control" placeholder="nº teléfono" ng-model="centro.telef" ng-pattern="/^\d+$/" ng-minlength="9" aria-describedby="tittelef">
+                <span class="input-group-addon" id="titmovil"><span class="glyphicon glyphicon-phone"></span></span>
+                <input class="form-control" placeholder="nº de móvil" ng-model="centro.movil" ng-pattern="/^\d+$/" ng-minlength="9" aria-describedby="titmovil">
+                <span class="input-group-addon" id="titemail">@ </span>
+                <input class="form-control" type="email" placeholder="correo electrónico" ng-model="centro.mail" aria-describedby="titemail">
+              </div>
+            </div>
+            <div class="form-group text-center">
+              <br/>
+              <button type="submit" class="btn btn-default" id="submit""><span class="glyphicon glyphicon-save"></span> Grabar </button>
+            </div>
+            <div class="col-sm-5"></div>
+          </div>
+        </form>
+        <div class="col-sm-12"><pre>{{ c }}</pre></div>
+      </div>
+      <!--<div class="col-sm-2"></div>-->
+    </div>
+</section>

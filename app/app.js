@@ -5,15 +5,15 @@ var path = require('path'); // necesario para trabajar con directorios.
 var partials = require('express-partials'); // necesario para poder usar vistas parciales.
 
 var logger = require('morgan'); // módulo log para el desarrollo.
-    
+
 // Módulos necesarios para hacer el login.
- 
+
 // login
-var session = require('express-session')
-  , cookieParser = require('cookie-parser')
-  , bodyParser = require('body-parser')
-  , passport = require('passport')
-  , flash = require('connect-flash');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var passport = require('passport');
+var flash = require('connect-flash');
 
 // favicon
 var favicon = require('serve-favicon');
@@ -55,8 +55,11 @@ app.use(partials());
 
 
 // establecer las rutas.
-require('./routes/index')(app, passport);
-require('./routes/users')(app, passport);
+require('./routes/index.js')(app, passport);
+require('./routes/users.route.js')(app, passport);
+require('./routes/centros.route.js')(app, passport);
+require('./routes/visitas.route.js')(app, passport);
+
 
 
 // Establecer la parte de páginas estáticas. 
@@ -69,31 +72,31 @@ app.use(favicon(path.join(__dirname + '/../public/favicon.ico')));
 
 // Pagina 404
 app.use(function (req, res, next) {
-    var err = new Error('Página no encontrada.');
-    err.status = 404;
-    next(err);
+  var err = new Error('Página no encontrada.');
+  err.status = 404;
+  next(err);
 });
 
 // Errores desde desarrollo.
 if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            title: app.get('nomApp') + ' - Error',
-            message: err.message,
-            error: err
-        });
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      title: app.get('nomApp') + ' - Error',
+      message: err.message,
+      error: err
     });
+  });
 }
 
 // errores producción
 app.use(function (err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        title: app.get('nomApp') + ' - Error',
-        error: {},
-    });
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    title: app.get('nomApp') + ' - Error',
+    error: {},
+  });
 });
 
 module.exports = app; 
