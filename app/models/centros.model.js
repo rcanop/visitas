@@ -73,7 +73,7 @@ var centros = {
       } else {
         if (row) {
           centros.actualizarValores(row);
-          callback('', centros.centroValue);
+          callback('', centros.centroValue());
         } else {
           return callback(options, null);
         }
@@ -153,7 +153,7 @@ var centros = {
         }
         else {
           centros.idcentros = this.lastID;
-          cb(centros.centroValue);
+          cb(centros.centroValue());
         }
       });
     } else {
@@ -195,7 +195,7 @@ var centros = {
           console.warn(err.message);
           cb(false);
         } else {
-          cb(centros.centroValue);
+          cb(centros.centroValue());
         }
       });
     } else {

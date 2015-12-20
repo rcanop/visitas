@@ -3,10 +3,10 @@ exports.read = function (req, res, next) {
   var centro = undefined;
   if (isNaN(req.params.id)) {
     res.redirect('app.html');
-  } else if (req.params.id < 0) {
+  } else if (req.params.id <= 0) {
     Centro.centroBlank();
-    centro.idusuarios = req.user.idusuarios;
-    res.json(centro);
+    Centro.idusuarios = req.user.idusuarios;
+    res.json(Centro.centroValue());
 
   } else {
     Centro.getCentroById({ idcentros: req.params.id }, function () {

@@ -15,7 +15,7 @@ var visitas = {
     this.idvisitas = 0;
     this.idusuarios = 0;
     this.idcentros = 0;
-    this.asunto = ""; // O normal
+    this.asunto = ""; 
     this.objetivo = null;
     this.fecha = null;
     this.centro = {}
@@ -53,7 +53,7 @@ var visitas = {
       } else {
         if (row) {
           this.actualizarValores(row);
-          this.centro = this.Centro.getCentroById(this.idcentros);
+          this.centro = this.Centro.getCentroById({idcentros: row.idcentros});
           callback("", this);
         } else {
           return callback(options, null);
@@ -74,7 +74,7 @@ var visitas = {
         if (rows) {
           this.actualizarValores(rows);
           for (var row in rows) {
-            row.centro = this.Centro.getCentroById(row.idcentros);
+            row.centro = this.Centro.getCentroById({idcentros: row.idcentros});
           }
           callback(this);
         } else {
@@ -85,7 +85,7 @@ var visitas = {
   },
 
   getVisitas: function (options, callback) {
-    var cmdSQL = "SELECT * FROM visitas WHERE "
+    var cmdSQL = "SELECT * FROM visitas WHERE ";
     var where = "";
     var param = [];
     if (!options || !options.idcentros) {
@@ -116,7 +116,7 @@ var visitas = {
       } else {
         if (rows) {
           for (var row in rows) {
-            row.centro = this.Centro.getCentroById(row.idcentros);
+            row.centro = this.Centro.getCentroById({idcentros: row.idcentros});
           }
           callback(rows);
         }

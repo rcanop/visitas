@@ -36,8 +36,10 @@ angular
         updateCentro: function (id, centro) {
           if (id > 0) {
             return $http.put('/api/centros/' + id, { centro: centro });
+
           } else {
-            return $http.post('api/centros/' + id, { centro: centro });
+            return $http.post('/api/centros/' + id, { centro: centro });
+
           }
         }
       };
@@ -75,7 +77,7 @@ angular
           centrosFactory.updateCentro($scope.centro.idcentros, $scope.centro)
             .then(function (datos) {
               //$scope.centro = datos.data.centro;
-              centrosFactory.getCentro($scope.centro.idcentros);
+              centrosFactory.getCentro(datos.data.idcentros);
 
             }, function (error) {
             $scope.c = error.data;
