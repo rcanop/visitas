@@ -108,7 +108,7 @@ function createTablePersonal(dropTable) {
       'idpersonal INTEGER PRIMARY KEY AUTOINCREMENT,\r\n' +
       'nombre VARCHAR(254) NOT NULL, \r\n' +
       'apellidos VARCHAR(254) NULL, \r\n' +
-      'nif VARCHAR(200) NULL, \r\n' + 
+      'nif VARCHAR(20) NULL, \r\n' + 
       'tipopersonal SMALLINT NOT NULL, \r\n ' +
       'email VARCHAR(254),\r\n' +
       'telef VARCHAR(15), \r\n' +
@@ -116,6 +116,9 @@ function createTablePersonal(dropTable) {
       'puesto VARCHAR(254), \r\n' +
       'categoria VARCHAR(254),\r\n' +
       'situacion VARCHAR(254),\r\n' +
+      'idcentros INT NOT NULL,\r\n' +
+      'alta DATE NOT NULL,\r\n' +
+      'baja DATE NULL,\r\n' +
       'idusuarios INTEGER NOT NULL\r\n' + 
       ')';
     db.exec(cmdSQL);
@@ -175,7 +178,7 @@ function createTableVisitasPersona(dropTable) {
   process.nextTick(function () {
     var cmdSQL = 'CREATE TABLE IF NOT EXISTS visitaspersona ( \r\n ' +
       'idvisitas INTEGER NOT NULL,\r\n' +
-      'idpersona INTEGER NOT NULL,\r\n' +
+      'idpersonal INTEGER NOT NULL,\r\n' +
       'asunto VARCHAR(254), \r\n' +
       'objetivo TEXT \r\n' +
       ')';
@@ -189,5 +192,4 @@ function createTableVisitasPersona(dropTable) {
       db.exec(cmdSQL);
     }
   });
-  
 }
