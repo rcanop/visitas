@@ -9,7 +9,7 @@ exports.read = function (req, res, next) {
     res.json(Centro.centroValue());
 
   } else {
-    Centro.getCentroById({ idcentros: req.params.id }, function () {
+    Centro.getCentroById(req.params.id, function () {
       centro = Centro.centroValue();
       res.json(centro);
     });

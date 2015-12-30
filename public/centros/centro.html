@@ -4,10 +4,16 @@
     <div class="panel panel-info col-sm-8">
       <div class="panel-heading">
         <h3 class="panel-title text-center"><span class="glyphicon glyphicon-info-sign"> Información del centro de visita </span></h3>
-        <br/>
         <a href="/app.html#/centros" class="btn btn-info btn-sm ">
           <span class="glyphicon glyphicon-list-all"></span> Volver
         </a>
+        <br/>
+        <p class="text-warning text-right" ng-if= "(centro != undefined && msg != undefined && msg.error != undefined)">
+          <span class="glyphicon glyphicon-warning-sign"> {{ msg.error }}  {{ msg.ahora | date:'medium' }}</span>
+        </p>
+        <p class="text-success text-right" ng-if= "(centro != undefined && msg != undefined && msg.info != undefined)">
+          <span class="glyphicon glyphicon-info-sign"> {{ msg.info }} {{ msg.ahora | date:'medium' }}</span>
+        </p>
       </div>
       <div class="panel body">
         <form ng-submit="submit()" ng-if="centro != undefined">

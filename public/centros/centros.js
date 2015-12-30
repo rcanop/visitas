@@ -43,7 +43,7 @@ angular
           }
         }
       };
-  }])
+    }])
   .controller('CentrosController', [
     '$scope',
     'centrosFactory',
@@ -76,12 +76,17 @@ angular
         if ($scope.centro) {
           centrosFactory.updateCentro($scope.centro.idcentros, $scope.centro)
             .then(function (datos) {
-              //$scope.centro = datos.data.centro;
-              centrosFactory.getCentro(datos.data.idcentros);
-
+              //centrosFactory.getCentro(datos.data.idcentros);
+              $scope.centro = datos.data;
+              $scope.msg = undefined;
+              
+              if (datos.data.msg) {
+                $scope.msg = datos.data.msg;
+                $scope.msg.ahora = new Date();
+              }
             }, function (error) {
-            $scope.c = error.data;
-          });
+              $scope.c = error.data;
+            });
         }
       };
     }

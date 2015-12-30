@@ -47,24 +47,14 @@ var centros = {
     }
   },
 
-  getCentroById: function (options, callback) {
-    var cmdSQL = 'SELECT * FROM centros WHERE ';
-    var where = '';
+  getCentroById: function (id, callback) {
+    var cmdSQL = 'SELECT * FROM centros WHERE idcentros = ? LIMIT 1';
     var param = [];
-    if (!options || !options.idcentros) {
-      options = { idcentros: -1 };
+    if (!id || isNaN(id)) {
+      id = -1;
     }
 
-    for (var prop in options) {
-      if (options.hasOwnProperty(prop)) {
-        where = where.length > 0 ? ' AND ' : ''
-          + prop + ' = ?';
-        param.push(options[prop]);
-
-      }
-    }
-
-    cmdSQL += where + ' LIMIT 1';
+    param.push(id);
     var cmd = this.db.prepare(cmdSQL, param);
 
     cmd.get(function (err, row) {
@@ -75,40 +65,40 @@ var centros = {
           centros.actualizarValores(row);
           callback('', centros.centroValue());
         } else {
-          return callback(options, null);
+          return callback(id, null);
         }
       }
     });
 
   },
 
-  getCentrosByUsuarioId: function (idUsuarios, callback) {
+  getCentrosByUsuarioId: function (idUsuarios, cb) {
     var cmdSQL = 'SELECT * FROM centros WHERE idusuarios = ?';
     var rows = [];
     this.db.each(cmdSQL, [idUsuarios], function (err, row) {
       rows.push(row);
-    }, function (data) {
+    }, function (err, dato) {
       if (rows.length > 0) {
-        callback(rows);
+        cb(rows);
       }
     });
   },
 
-  getCentros: function (options, callback) {
-    var cmdSQL = 'SELECT * FROM centros '
+  getCentros: function (options, cb) {
+    var cmdSQL = 'SELECT COUNT(*) FROM centros '
     var where = '';
     var param = [];
     var rows = [];
 
-    if (!options || !options.idcentros) {
+    if (!options) {
       options = {};
     }
 
     for (var prop in options) {
       if (options.hasOwnProperty(prop)) {
-        where = where.length > 0 ? ' AND ' :
-          '' + prop + ' = ?';
-        param.push(options[prop]);
+        where = (where.length > 0 ? where + ' AND ' : '') +
+        prop + ' ' + options[prop].operator + ' ?'
+        param.push(options[prop].value)
       }
     }
 
@@ -118,18 +108,69 @@ var centros = {
     }
 
     cmdSQL += ' LIMIT 200';
+    this.db.get(cmdSQL, param, function (err, data) {
+      var result = {
+        exists: false,
+        error: err
+      };
+      if (err) {
+        result.error = err;
 
-    this.db.each(cmdSQL, param, function (err, row) {
-      rows.push(row);
+      } else {
+        result.exists = (data.cta > 0);
+
+      }
+      cb(result);
+
     });
-
-    if (rows.length > 0) {
-      callback(rows);
-    }
-
   },
 
+  existCentroBy: function (options, cb) {
+    var cmdSQL = 'SELECT COUNT(*) cta FROM centros '
+    var where = '';
+    var param = [];
+
+    if (!options) {
+      options = {};
+    }
+
+    for (var prop in options) {
+      if (options.hasOwnProperty(prop)) {
+        where = (where.length > 0 ? where + ' AND ' : '') +
+        prop + ' ' + options[prop].operator + ' ?'
+        param.push(options[prop].value)
+      }
+    }
+
+    if (where.length > 0) {
+      cmdSQL += 'WHERE ' + where;
+
+    }
+    this.db.get(cmdSQL, param, function (err, data) {
+      var result = {
+        exists: false,
+        error: err
+      };
+      if (err) {
+        result.error = err;
+
+      } else {
+        result.exists = (data.cta > 0);
+
+      }
+      cb(result);
+
+    });
+
+  },
   createCentro: function (cb) {
+    var options = {
+      centro: {
+        name: 'centro',
+        value: this.centro,
+        operator: '='
+      }
+    };
     var cmdSQL = 'INSERT INTO centros (idcentros, centro, direccion, codpos, poblacion, provincia, email, telef, movil, idUsuarios)' +
       ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
@@ -147,13 +188,23 @@ var centros = {
     ];
 
     if (this.idusuarios && this.idusuarios > 0) {
-      this.db.run(cmdSQL, param, function (err) {
-        if (err) {
-          cb(err);
-        }
-        else {
-          centros.idcentros = this.lastID;
-          cb(centros.centroValue());
+      centros.existCentroBy(options, function (result) {
+        if (!result.exists && !result.error) {
+          centros.db.run(cmdSQL, param, function (err) {
+            if (err) {
+              err.msg = { "error": err };
+              cb(err);
+            }
+            else {
+              centros.idcentros = centros.lastID;
+              var ct = centros.centroValue();
+              cb(ct);
+            }
+          });
+        } else {
+          var ct = centros.centroValue();
+          ct.msg = { "error": "Ya existe un centro con el nombre: " + centros.centro };
+          cb(ct);
         }
       });
     } else {
@@ -163,6 +214,18 @@ var centros = {
   },
 
   updateCentro: function (cb) {
+    var options = {
+      centro: {
+        name: 'centro',
+        value: this.centro,
+        operator: "="
+      },
+      idcentros: {
+        name: 'idcentros',
+        value: this.idcentros,
+        operator: "!="
+      }
+    };
     var cmdSQL = 'UPDATE centros ' +
       'SET centro = ?' +
       ', direccion = ?' +
@@ -190,22 +253,28 @@ var centros = {
 
     if (this.idusuarios && this.idcentros && this.idusuarios > 0 && this.idcentros > 0
       && this.centro && this.centro.length > 0) {
-      this.db.run(cmdSQL, param, function (err) {
-        if (err) {
-          console.warn(err.message);
-          cb(false);
+      centros.existCentroBy(options, function (result) {
+        if (!result.exists && !result.error) {
+          centros.db.run(cmdSQL, param, function (err) {
+            if (err) {
+              console.warn(err.message);
+              cb(false);
+            } else {
+              var ct = centros.centroValue();
+              ct.msg = { info: 'Ficha grabada.' };
+              cb(ct);
+            }
+          });
         } else {
-          cb(centros.centroValue());
+          // no cumple los parámetros para añadir el dato.
+          var ct = centros.centroValue();
+          ct.msg = { error: 'El nombre del centro está repetido.' };
+          cb(ct);
         }
       });
-    } else {
-      // no cumple los parámetros para añadir el dato.
-      cb(false);
     }
   }
 }
-
-
 
 module.exports = centros;
 
