@@ -19,21 +19,21 @@ angular
   .factory('centrosFactory', ['$http'
     , function ($http) {
       return {
-        getCentros: function () {
+        get: function () {
           return $http({
             method: 'GET',
             isArray: true,
             url: '/api/centros',
           });
         },
-        getCentro: function (id) {
+        getId: function (id) {
           return $http({
             method: 'GET',
             isArray: false,
             url: '/api/centros/' + id,
           });
         },
-        updateCentro: function (id, centro) {
+        update: function (id, centro) {
           if (id > 0) {
             return $http.put('/api/centros/' + id, { centro: centro });
 
@@ -49,7 +49,7 @@ angular
     'centrosFactory',
     function ($scope, centrosFactory) {
       $scope.centros = [];
-      centrosFactory.getCentros()
+      centrosFactory.get()
         .then(function (response) {
           $scope.centros = response.data;
         }, function (error) {
@@ -57,7 +57,7 @@ angular
         });
     }
   ])
-  .controller("CentroController", [
+  .controller('CentroController', [
     '$scope',
     'centrosFactory',
     '$routeParams',
@@ -65,7 +65,7 @@ angular
     function ($scope, centrosFactory, $routeParams, $location) {
       $scope.centro = undefined;
       // Obtener el registro.
-      centrosFactory.getCentro($routeParams.id).then(function (response) {
+      centrosFactory.getId($routeParams.id).then(function (response) {
         $scope.centro = response.data;
       }, function (error) {
         $scope.c = error.data;
@@ -74,12 +74,16 @@ angular
       // Grabación de la ficha.
       $scope.submit = function () {
         if ($scope.centro) {
-          centrosFactory.updateCentro($scope.centro.idcentros, $scope.centro)
+          centrosFactory.update($scope.centro.idcentros, $scope.centro)
             .then(function (datos) {
               //centrosFactory.getCentro(datos.data.idcentros);
               $scope.centro = datos.data;
               $scope.msg = undefined;
-              
+              if ($routeParams.id && $routeParams.id <= 0
+                && $scope.centro && $scope.centro.idcentros > 0) {
+                $routeParams.id = $scope.centro.idcentros;
+              }
+
               if (datos.data.msg) {
                 $scope.msg = datos.data.msg;
                 $scope.msg.ahora = new Date();

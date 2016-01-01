@@ -4,33 +4,33 @@ exports.read = function (req, res, next) {
   if (isNaN(req.params.id)) {
     res.redirect('app.html');
   } else if (req.params.id <= 0) {
-    Centro.centroBlank();
+    Centro.datosBlank();
     Centro.idusuarios = req.user.idusuarios;
-    res.json(Centro.centroValue());
+    res.json(Centro.datosValor());
 
   } else {
-    Centro.getCentroById(req.params.id, function () {
-      centro = Centro.centroValue();
+    Centro.getDatoById(req.params.id, function () {
+      centro = Centro.datosValor();
       res.json(centro);
     });
 
   }
 };
 exports.list = function (req, res, next) {
-  Centro.getCentrosByUsuarioId(req.user.idusuarios, function (centros) {
+  Centro.getDatosByUsuarioId(req.user.idusuarios, function (centros) {
     res.json(centros);
   });
 };
 
 exports.update = function (req, res, next) {
   var id = req.params.id;
-  Centro.actualizarValores(req.body.centro);
+  Centro.datosActualizar(req.body.centro);
   if (id > 0) {
-    Centro.updateCentro(function (centro) {
+    Centro.modeloUpdate(function (centro) {
       res.json(centro);
     });
   } else {
-    Centro.createCentro(function (centro) {
+    Centro.modeloCreate(function (centro) {
       res.json(centro);
     });
   }

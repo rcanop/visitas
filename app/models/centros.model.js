@@ -1,8 +1,8 @@
 'use strict';
 
-var centros = {
+var modelo = {
   idcentros: 0,
-  centro: String,
+  nombre: String,
   direccion: String,
   codpos: String,
   poblacion: String,
@@ -13,9 +13,9 @@ var centros = {
   idusuarios: 0,
   db: require('./models.js'),
 
-  centroBlank: function () {
+  datosBlank: function () {
     this.idcentros = 0;
-    this.centro = '';
+    this.nombre = '';
     this.direccion = null;
     this.codpos = null;
     this.provincia = null;
@@ -26,10 +26,10 @@ var centros = {
     this.idusuarios = null;
   },
 
-  centroValue: function () {
+  datosValor: function () {
     return {
       idcentros: this.idcentros,
-      centro: this.centro,
+      nombre: this.nombre,
       direccion: this.direccion,
       codpos: this.codpos,
       provincia: this.provincia,
@@ -41,13 +41,13 @@ var centros = {
     };
   },
 
-  actualizarValores: function (usrObj) {
+  datosActualizar: function (usrObj) {
     for (var p in usrObj) {
       this[p] = usrObj[p];
     }
   },
 
-  getCentroById: function (id, callback) {
+  getDatoById: function (id, callback) {
     var cmdSQL = 'SELECT * FROM centros WHERE idcentros = ? LIMIT 1';
     var param = [];
     if (!id || isNaN(id)) {
@@ -62,8 +62,8 @@ var centros = {
         throw err;
       } else {
         if (row) {
-          centros.actualizarValores(row);
-          callback('', centros.centroValue());
+          modelo.datosActualizar(row);
+          callback('', modelo.datosValor());
         } else {
           return callback(id, null);
         }
@@ -72,7 +72,7 @@ var centros = {
 
   },
 
-  getCentrosByUsuarioId: function (idUsuarios, cb) {
+  getDatosByUsuarioId: function (idUsuarios, cb) {
     var cmdSQL = 'SELECT * FROM centros WHERE idusuarios = ?';
     var rows = [];
     this.db.each(cmdSQL, [idUsuarios], function (err, row) {
@@ -84,7 +84,7 @@ var centros = {
     });
   },
 
-  getCentros: function (options, cb) {
+  getDatos: function (options, cb) {
     var cmdSQL = 'SELECT COUNT(*) FROM centros '
     var where = '';
     var param = [];
@@ -125,7 +125,7 @@ var centros = {
     });
   },
 
-  existCentroBy: function (options, cb) {
+  existDatoBy: function (options, cb) {
     var cmdSQL = 'SELECT COUNT(*) cta FROM centros '
     var where = '';
     var param = [];
@@ -163,20 +163,20 @@ var centros = {
     });
 
   },
-  createCentro: function (cb) {
+  modeloCreate: function (cb) {
     var options = {
-      centro: {
-        name: 'centro',
-        value: this.centro,
+      nombre: {
+        name: 'nombre',
+        value: this.nombre,
         operator: '='
       }
     };
-    var cmdSQL = 'INSERT INTO centros (idcentros, centro, direccion, codpos, poblacion, provincia, email, telef, movil, idUsuarios)' +
+    var cmdSQL = 'INSERT INTO centros (idcentros, nombre, direccion, codpos, poblacion, provincia, email, telef, movil, idUsuarios)' +
       ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
     var param = [
       null,
-      this.centro,
+      this.nombre,
       this.direccion,
       this.codpos,
       this.poblacion,
@@ -188,22 +188,23 @@ var centros = {
     ];
 
     if (this.idusuarios && this.idusuarios > 0) {
-      centros.existCentroBy(options, function (result) {
+      modelo.existDatoBy(options, function (result) {
         if (!result.exists && !result.error) {
-          centros.db.run(cmdSQL, param, function (err) {
+          modelo.db.run(cmdSQL, param, function (err) {
             if (err) {
               err.msg = { "error": err };
               cb(err);
             }
             else {
-              centros.idcentros = centros.lastID;
-              var ct = centros.centroValue();
+              modelo.idcentros = this.lastID;
+              var ct = modelo.datosValor();
+              ct.msg = { info: 'Centro creado.' };
               cb(ct);
             }
           });
         } else {
-          var ct = centros.centroValue();
-          ct.msg = { "error": "Ya existe un centro con el nombre: " + centros.centro };
+          var ct = modelo.datosValor();
+          ct.msg = { "error": "Ya existe un centro con el nombre: " + modelo.centro };
           cb(ct);
         }
       });
@@ -213,11 +214,11 @@ var centros = {
     }
   },
 
-  updateCentro: function (cb) {
+  modeloUpdate: function (cb) {
     var options = {
-      centro: {
-        name: 'centro',
-        value: this.centro,
+      nombre: {
+        name: 'nombre',
+        value: this.nombre,
         operator: "="
       },
       idcentros: {
@@ -227,7 +228,7 @@ var centros = {
       }
     };
     var cmdSQL = 'UPDATE centros ' +
-      'SET centro = ?' +
+      'SET nombre = ?' +
       ', direccion = ?' +
       ', codpos = ?' +
       ', poblacion = ?' +
@@ -239,7 +240,7 @@ var centros = {
       'WHERE idcentros = ?';
 
     var param = [
-      this.centro,
+      this.nombre,
       this.direccion,
       this.codpos,
       this.poblacion,
@@ -252,29 +253,64 @@ var centros = {
     ];
 
     if (this.idusuarios && this.idcentros && this.idusuarios > 0 && this.idcentros > 0
-      && this.centro && this.centro.length > 0) {
-      centros.existCentroBy(options, function (result) {
+      && this.nombre && this.nombre.length > 0) {
+      modelo.existDatoBy(options, function (result) {
         if (!result.exists && !result.error) {
-          centros.db.run(cmdSQL, param, function (err) {
+          modelo.db.run(cmdSQL, param, function (err) {
             if (err) {
               console.warn(err.message);
               cb(false);
             } else {
-              var ct = centros.centroValue();
+              var ct = modelo.datosValor();
               ct.msg = { info: 'Ficha grabada.' };
               cb(ct);
             }
           });
         } else {
           // no cumple los parámetros para añadir el dato.
-          var ct = centros.centroValue();
+          var ct = modelo.datosValor();
           ct.msg = { error: 'El nombre del centro está repetido.' };
           cb(ct);
         }
       });
     }
+  },
+
+  modeloDelete: function (options, cb) {
+    var cmdSQL = 'DELETE FROM centros '
+    var where = '';
+    var param = [];
+
+    if (!options) {
+      options = {
+        idcentros: {
+          name: 'idcentros',
+          value: this.idcentros,
+          operator: "="
+        }
+      };
+    }
+
+    for (var prop in options) {
+      if (options.hasOwnProperty(prop)) {
+        where = (where.length > 0 ? where + ' AND ' : '') +
+        prop + ' ' + options[prop].operator + ' ?'
+        param.push(options[prop].value)
+      }
+    }
+
+    if (where.length > 0) {
+      cmdSQL += 'WHERE ' + where;
+    }
+    
+    modelo.db.run(cmdSQL, param, function(err) {
+      if (err) {
+        cb(false);
+      } else {
+        cb(modelo.datosValor());
+      }
+    });
   }
 }
-
-module.exports = centros;
+module.exports = modelo;
 

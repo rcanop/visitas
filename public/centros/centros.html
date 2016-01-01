@@ -10,27 +10,27 @@
         </a>
       </div>
       <div class="panel body">
-        <div class="row" ng-repeat="c in centros" ng-if="centros.length > 0">
-          <div class="col-sm-12"><strong>Centro:</strong> {{ c.centro }}</div>
-          <div class="col-sm-12"><strong>Direccion:</strong> {{ c.direccion }}</div>
-          <div class="col-sm-3"><strong>Cód. Postal:</strong> {{ c.codpos }}</div>
-          <div class="col-sm-3"><strong>Población:</strong> {{ c.poblacion }}</div>
-          <div class="col-sm-3"><strong>Provincia:</strong> {{ c.provincia }}</div>
-          <div class="col-sm-3"><strong>Teléfono:</strong> {{ c.telef }}</div>
-          <div class="col-sm-3"><strong>Móvil:</strong> {{ c.movil }}</div>
-          <div class="col-sm-3"><strong>E-mail:</strong> {{ c.email }}</div>
+        <div class="row" ng-repeat="reg in centros" ng-if="centros.length > 0">
+          <div class="col-sm-12"><strong>Centro:</strong> {{ reg.nombre }}</div>
+          <div class="col-sm-12"><strong>Direccion:</strong> {{ reg.direccion }}</div>
+          <div class="col-sm-3"><strong>Cód. Postal:</strong> {{ reg.codpos }}</div>
+          <div class="col-sm-3"><strong>Población:</strong> {{ reg.poblacion }}</div>
+          <div class="col-sm-3"><strong>Provincia:</strong> {{ reg.provincia }}</div>
+          <div class="col-sm-3"><strong>Teléfono:</strong> {{ reg.telef }}</div>
+          <div class="col-sm-3"><strong>Móvil:</strong> {{ reg.movil }}</div>
+          <div class="col-sm-3"><strong>E-mail:</strong> {{ reg.email }}</div>
           <div class="col-sm-12 text-right">
-            <a href="/app.html#/centros/{{ c.idcentros }}" class="btn btn-warning btn-sm" ng-if="user.idUsuarios == c.idUsuarios">
+            <a href="/app.html#/centros/{{ reg.idcentros }}" class="btn btn-warning btn-sm" ng-if="user.idUsuarios == reg.idUsuarios">
               <span class="glyphicon glyphicon-edit"></span>
             </a>
-            <a href="/app.html#/centros/{{ c.idcentros }}" class="btn btn-warning btn-sm" ng-if="user.idUsuarios != c.idUsuarios">
+            <a href="/app.html#/centros/{{ reg.idcentros }}" class="btn btn-warning btn-sm" ng-if="user.idUsuarios != reg.idUsuarios">
               <span class="glyphicon glyphicon-eyeopen"></span>
             </a>
           </div>
           <div class="row" ng-if="centros.length == 0">
             <p class="text-center"><strong>No se han encontrado centros dados de alta</strong></p>
           </div>
-          <div class="col-sm-12"><pre>{{ c }}</pre></div>
+          <!--<div class="col-sm-12"><pre>{{ reg }}</pre></div>-->
         </div>
       </div>
     </div>
