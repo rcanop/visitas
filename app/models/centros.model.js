@@ -11,6 +11,7 @@ var modelo = {
   telef: String,
   movil: String,
   idusuarios: 0,
+  _accion: '',
   db: require('./models.js'),
 
   datosBlank: function () {
@@ -75,6 +76,7 @@ var modelo = {
   getDatosByUsuarioId: function (idUsuarios, cb) {
     var cmdSQL = 'SELECT * FROM centros WHERE idusuarios = ?';
     var rows = [];
+
     this.db.each(cmdSQL, [idUsuarios], function (err, row) {
       rows.push(row);
     }, function (err, dato) {
@@ -88,7 +90,6 @@ var modelo = {
     var cmdSQL = 'SELECT COUNT(*) FROM centros '
     var where = '';
     var param = [];
-    var rows = [];
 
     if (!options) {
       options = {};
@@ -107,7 +108,6 @@ var modelo = {
 
     }
 
-    cmdSQL += ' LIMIT 200';
     this.db.get(cmdSQL, param, function (err, data) {
       var result = {
         exists: false,
@@ -187,25 +187,18 @@ var modelo = {
       this.idusuarios,
     ];
 
+    this._accion = 'INSERT';
+    
     if (this.idusuarios && this.idusuarios > 0) {
-      modelo.existDatoBy(options, function (result) {
+      this.existDatoBy(options, function (result) {
         if (!result.exists && !result.error) {
-          modelo.db.run(cmdSQL, param, function (err) {
-            if (err) {
-              err.msg = { "error": err };
-              cb(err);
-            }
-            else {
-              modelo.idcentros = this.lastID;
-              var ct = modelo.datosValor();
-              ct.msg = { info: 'Centro creado.' };
-              cb(ct);
-            }
-          });
+          modelo.run(cmdSQL, param, cb);
+          
         } else {
           var ct = modelo.datosValor();
           ct.msg = { "error": "Ya existe un centro con el nombre: " + modelo.centro };
           cb(ct);
+          
         }
       });
     } else {
@@ -252,20 +245,13 @@ var modelo = {
       this.idcentros,
     ];
 
+    this._accion = 'UPDATE';
+
     if (this.idusuarios && this.idcentros && this.idusuarios > 0 && this.idcentros > 0
       && this.nombre && this.nombre.length > 0) {
-      modelo.existDatoBy(options, function (result) {
+      this.existDatoBy(options, function (result) {
         if (!result.exists && !result.error) {
-          modelo.db.run(cmdSQL, param, function (err) {
-            if (err) {
-              console.warn(err.message);
-              cb(false);
-            } else {
-              var ct = modelo.datosValor();
-              ct.msg = { info: 'Ficha grabada.' };
-              cb(ct);
-            }
-          });
+          modelo.run(cmdSQL, param, cb);
         } else {
           // no cumple los parámetros para añadir el dato.
           var ct = modelo.datosValor();
@@ -280,6 +266,8 @@ var modelo = {
     var cmdSQL = 'DELETE FROM centros '
     var where = '';
     var param = [];
+
+    this._accion = 'DELETE';
 
     if (!options) {
       options = {
@@ -302,15 +290,46 @@ var modelo = {
     if (where.length > 0) {
       cmdSQL += 'WHERE ' + where;
     }
-    
-    modelo.db.run(cmdSQL, param, function(err) {
+
+    this.run(cmdSQL, param, cb);
+  },
+
+  run: function (cmdSQL, param, cb) {
+    var stmt = this.db.prepare(cmdSQL, param);
+    stmt.run(function (err, data) {
       if (err) {
+        console.warn(err.message);
         cb(false);
       } else {
-        cb(modelo.datosValor());
+        var ct = modelo.datosValor();
+
+        if ((modelo._accion == 'UPDATE' && this.changes > 0)) {
+          ct.msg = { info: 'Ficha grabada.' };
+          
+        } else if (modelo._accion == 'INSERT' && this.lastID > 0) {
+          ct.msg = { info: 'Centro creado.' };
+          
+        } else if (modelo._accion == 'DELETE' && this.changes > 0) {
+          modelo.datosBlank();
+          ct = modelo.datosValor();
+          ct.msg = { info: modelo.changes + ' Registro(s) eliminado(s)' };
+          
+        } else if (modelo._accion == 'UPDATE' && this.changes == 0) {
+          ct.msg = { warn: 'No se ha actualizado ningún registro.' };
+          
+        } else if (modelo._accion == 'DELETE' && this.changes == 1) {
+          ct.msg = { warn: 'No se ha eliminado ningún registro.' };
+          
+        }
+
+        cb(ct);
+        modelo._accion = '';
+        
       }
     });
+    stmt.finalize();
   }
+
 }
 module.exports = modelo;
 

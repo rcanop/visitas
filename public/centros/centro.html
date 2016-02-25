@@ -8,10 +8,13 @@
           <span class="glyphicon glyphicon-list-all"></span> Volver
         </a>
         <br/>
-        <p class="text-warning text-right" ng-if= "(centro != undefined && msg != undefined && msg.error != undefined)">
+        <p class="text-danger text-right" ng-if="(centro != undefined && msg != undefined && msg.error != undefined)">
           <span class="glyphicon glyphicon-warning-sign"> {{ msg.error }}  {{ msg.ahora | date:'medium' }}</span>
         </p>
-        <p class="text-success text-right" ng-if= "(centro != undefined && msg != undefined && msg.info != undefined)">
+        <p class="text-warning text-right" ng-if="(centro != undefined && msg != undefined && msg.warn != undefined)">
+          <span class="glyphicon glyphicon-warning-sign"> {{ msg.warn }}  {{ msg.ahora | date:'medium' }}</span>
+        </p>
+        <p class="text-success text-right" ng-if="(centro != undefined && msg != undefined && msg.info != undefined)">
           <span class="glyphicon glyphicon-info-sign"> {{ msg.info }} {{ msg.ahora | date:'medium' }}</span>
         </p>
       </div>
