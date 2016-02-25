@@ -59,7 +59,7 @@ require('./routes/index.js')(app, passport);
 require('./routes/users.route.js')(app, passport);
 require('./routes/centros.route.js')(app, passport);
 require('./routes/visitas.route.js')(app, passport);
-
+require('./routes/empleados.route.js')(app, passport);
 
 
 // Establecer la parte de páginas estáticas. 

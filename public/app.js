@@ -7,7 +7,8 @@ angular
     'ngLocale',
     'usersModule',
     'visitasModule',
-    'centrosModule'
+    'centrosModule',
+    'empleadosModule'
   ])
 // Enrutador
   .config(['$routeProvider', '$locationProvider',

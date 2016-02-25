@@ -1,0 +1,36 @@
+<section ng-controller="EmpleadosController">
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="panel panel-info col-sm-8">
+      <div class="panel-heading">
+        <h3 class="panel-title"><span class="glyphicon glyphicon-info-sign"> Información de empleados </span></h3>
+        <br/>
+        <a href="/app.html#/empleados/0" class="btn btn-info btn-sm ">
+          <span class="glyphicon glyphicon-edit"></span> Nueva persona
+        </a>
+      </div>
+      <div class="panel body">
+        <div class="row" ng-repeat="reg in empleados" ng-if="empleados.length > 0">
+          <div class="col-sm-3"><strong>Nombre:</strong> {{ reg.nombre }}</div>
+          <div class="col-sm-6"><strong>Apellidos:</strong> {{ reg.apellidos }}</div>
+          <div class="col-sm-3"><strong>Puesto:</strong> {{ reg.puesto }}</div>
+          <div class="col-sm-3"><strong>Teléfono:</strong> {{ reg.telef }}</div>
+          <div class="col-sm-3"><strong>Móvil:</strong> {{ reg.movil }}</div>
+          <div class="col-sm-3"><strong>E-mail:</strong> {{ reg.email }}</div>
+          <div class="col-sm-12 text-right">
+            <a href="/app.html#/empleados/{{ reg.idempleados }}" class="btn btn-warning btn-sm" ng-if="user.idUsuarios == reg.idUsuarios">
+              <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a href="/app.html#/empleados/{{ reg.idempleados }}" class="btn btn-warning btn-sm" ng-if="user.idUsuarios != reg.idUsuarios">
+              <span class="glyphicon glyphicon-eyeopen"></span>
+            </a>
+          </div>
+          <div class="row" ng-if="empleados.length == 0">
+            <p class="text-center"><strong>No se han encontrado empleados dado de alta</strong></p>
+          </div>
+          <div class="col-sm-12"><pre>{{ reg }}</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
